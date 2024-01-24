@@ -1,0 +1,42 @@
+<.header>
+  Listing Weight entries
+  <:actions>
+    <.link patch={~p"/weight_entries/new"}>
+      <.button>New Weight entry</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="weight_entries"
+  rows={@streams.weight_entries}
+  row_click={fn {_id, weight_entry} -> JS.navigate(~p"/weight_entries/#{weight_entry}") end}
+>
+  <:col :let={{_id, weight_entry}} label="Date"><%= weight_entry.date %></:col>
+  <:col :let={{_id, weight_entry}} label="Weight"><%= weight_entry.weight %></:col>
+  <:action :let={{_id, weight_entry}}>
+    <div class="sr-only">
+      <.link navigate={~p"/weight_entries/#{weight_entry}"}>Show</.link>
+    </div>
+    <.link patch={~p"/weight_entries/#{weight_entry}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, weight_entry}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: weight_entry.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="weight_entry-modal" show on_cancel={JS.patch(~p"/weight_entries")}>
+  <.live_component
+    module={OmnitracksWeb.WeightEntryLive.FormComponent}
+    id={@weight_entry.id || :new}
+    title={@page_title}
+    action={@live_action}
+    weight_entry={@weight_entry}
+    patch={~p"/weight_entries"}
+  />
+</.modal>

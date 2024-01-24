@@ -56,6 +56,7 @@ defmodule OmnitracksWeb.Router do
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
+
     end
 
     post "/users/log_in", UserSessionController, :create
@@ -68,6 +69,13 @@ defmodule OmnitracksWeb.Router do
       on_mount: [{OmnitracksWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      live "/weight_entries", WeightEntryLive.Index, :index
+      live "/weight_entries/new", WeightEntryLive.Index, :new
+      live "/weight_entries/:id/edit", WeightEntryLive.Index, :edit
+
+      live "/weight_entries/:id", WeightEntryLive.Show, :show
+      live "/weight_entries/:id/show/edit", WeightEntryLive.Show, :edit
     end
   end
 
